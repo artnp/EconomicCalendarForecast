@@ -162,9 +162,6 @@ function updateTextField() {
     ["Core Inflation Rate YoY Flash","🔻","ราคาสินค้าบริการในครัวเรือนสูงขึ้น","💵","ราคาสินค้าบริการในครัวเรือนลดลง"],
     ["Inflation Rate MoM Flash","🔻","ราคาสินค้าบริการในครัวเรือนสูงขึ้นเทียบเดือนก่อน","💵","ราคาสินค้าบริการในครัวเรือนลดลงเทียบเดือนก่อน"],
     ["Initial Jobless Claims","🔻","จำนวนคนว่างงานเพิ่มขึ้น","💵","จำนวนคนว่างงานลดลง"],
-			
-    
-
     ];
 
     console.log(result)
@@ -200,6 +197,7 @@ function updateTextField() {
                 newDiv.style.textAlign = 'left';
                 newDiv.style.margin = '0 auto';
                 document.body.appendChild(newDiv);
+		document.getElementById('editor').innerHTML = '<iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-466772&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us" width="880" height="400" style="border: none;" scrolling="no"></iframe><br>x';
                 break;
             }
         }
