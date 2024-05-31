@@ -66,10 +66,9 @@
 
 <center>
     <div id="fomc"><div id="editor" contenteditable="true" oninput="updateTextField()" onpaste="updateTextField()">
-        <!-- <iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-466772&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us" 
-        width="880" height="120" style="border: none;" scrolling="no"> -->
-        <iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-85302&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us,jp,cn,eu,gb" 
-        width="880" height="400" style="border: none;" scrolling="no">
+        <iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-466772&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us" 
+        width="880" height="120" style="border: none;" scrolling="no">
+
 
 </iframe><br>x</div>
 
@@ -95,7 +94,7 @@ function updateTextField() {
     var tbody = doc.querySelector('#eventDate_table_body');
     var textContent = tbody ? tbody.textContent : ''; // Extracting text content if tbody exists
 
-    textContent = textContent.replace(/USD|CNY|EUR|GBP|JPY/g, '')
+    textContent = textContent.replace(/USDg, '')
 
     var matches = textContent.match(/([^0-9]+)(\d+\.*\d*%)(\d+\.*\d*%)(\d+\.*\d*%)/g); // Use 'g' flag for global search
     var result = [];
