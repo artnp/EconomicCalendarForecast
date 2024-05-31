@@ -94,7 +94,7 @@ function updateTextField() {
     var tbody = doc.querySelector('#eventDate_table_body');
     var textContent = tbody ? tbody.textContent : ''; // Extracting text content if tbody exists
 
-    textContent = textContent.replace(/USDg, '')
+    textContent = textContent.replace(/USD/g, '')
 
     var matches = textContent.match(/([^0-9]+)(\d+\.*\d*%)(\d+\.*\d*%)(\d+\.*\d*%)/g); // Use 'g' flag for global search
     var result = [];
