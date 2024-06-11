@@ -1,127 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Economic Calendar Forecast</title>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economic Calendar</title>
+    <style>
         body {
-      background-color: black;
-      color: white;
-        font-family: Arial, sans-serif; /* Standard font stack */
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* Prevent scrolling */
-    }
-    #editor {
-      border: 1px solid #ff0000;
-      max-height: 414px;
-      padding: 10px;
-      overflow-y: hidden;
-      overflow-x: hidden;
-    }
-    #predict {
-        margin-top: 10px; /* Add some space between iframe and predict text */
-    }
-    .button {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      position: fixed;
-      bottom: 5%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .black-box {
-    background-color: black;
-    color: white;
-    padding: 10px;
-    width: 99%;
-    overflow: hidden;
-    position: relative;
-  }
-  .flashing-bar {
-    width: 10px;
-    height: 15px;
-    background-color: white;
-	position: absolute;
-    animation: flashing 1.5s infinite;
-  }
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
 
-  @keyframes flashing {
-    0%, 49% {
-      opacity: 0;
-    }
-    50%, 100% {
-      opacity: 1;
-    }
-  }
-</style>
+        table {
+            width: 80%;
+            max-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+        th {
+            background-color: #444;
+        }
+        td {
+            background-color: #333;
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #444;
+        }
+        tbody tr:nth-child(even) td {
+            background-color: #3a3a3a;
+        }
+        tbody tr:hover td {
+            background-color: #444;
+        }
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 15px;
+        }
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 15px;
+        }
+    </style>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
-    <div class="black-box"><center><div class="flashing-bar"></div> <a href="javascript:history.back()" style="background-color:white;">🡨Go Back</a> &nbsp;&nbsp; <i> กด Ctrl+A ในช่องตาราง > คัดลอก > นำมาวางที่ตำแหน่ง X</i><br></center></div>
+    <center>
+    <table id="economic-calendar">
+        <thead>
+            <tr>
+                <th>วัน</th>
+                <th>ประกาศ</th>
+                <th>สำคัญ</th>
+                <th>ประเทศ</th>
+                <th>ก่อน</th>
+                <th>ทำนาย</th>
+                <th>แท้จริง</th>
+                <th>ผลลัพธ์</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be injected here -->
+        </tbody>
+    </table></center>
 
-<center>
-    <div id="fomc"><div id="editor" contenteditable="true" oninput="updateTextField()" onpaste="updateTextField()">
-        <iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-466772&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us" 
-        width="880" height="150" style="border: none;" scrolling="no">
+    <script>
+  const apiKey = 'sQxWATJCWEssuIBeQgtcp6rPkOGwsFDd';
+        const today = new Date().toISOString().split('T')[0];
+        const url = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${today}&to=${today}&apikey=${apiKey}`;
+        
+        const filterCriteria = {
+            impact: 'High',
+            countries: ['EU', 'CN', 'US', 'UK']
+        };
 
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const filteredData = data.filter(event => {
+                    return event.impact === filterCriteria.impact && filterCriteria.countries.includes(event.country);
+                });
 
-</iframe><br>x</div>
+                const tableBody = document.querySelector('#economic-calendar tbody');
+                tableBody.innerHTML = '';
 
-
-    <button class="button" onclick="example()">?</button>
-</center>
-<script>
-    function example() {
-  const sweetAlert = Swal.fire({
-    html: '<center>กด Ctrl+A ในช่องตาราง > คัดลอก > นำมาวางที่ตำแหน่ง X<br><img src="example.gif" width="100%"></center>',
-    width: '60%',
-    height: '60%',
-    showConfirmButton: false,
-    showCloseButton: true,
-    allowOutsideClick: true,
-    backdrop: false,
-  });
-}
-function updateTextField() {
-    var editorContent = document.getElementById('editor').innerHTML;
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(editorContent, 'text/html');
-    var tbody = doc.querySelector('#eventDate_table_body');
-    var textContent = tbody ? tbody.textContent : ''; // Extracting text content if tbody exists
-
-    textContent = textContent.replace(/USD/g, '')
-
-    var matches = textContent.match(/([^0-9]+)(\d+\.*\d*%)(\d+\.*\d*%)(\d+\.*\d*%)/g); // Use 'g' flag for global search
-    var result = [];
-    var eventX = [];
-    var real = [];
-    var forecast = [];
-    var past = [];
-
-    if (matches) {
-        matches.forEach(match => {
-
-            var parts = match.match(/([^0-9]+)(\d+\.*\d*%)(\d+\.*\d*%)(\d+\.*\d*%)/); // Match each line separately
-            
-            var label = (parts[1].trim().replace('%', '').replace('K', '')); // The non-numeric part
-            
-            var values = [parts[2].replace('%', '').replace('K', ''), parts[3].replace('%', '').replace('K', ''), parts[4].replace('%', '').replace('K', '')]; // Extracting the values and removing the '%' and 'K' suffixes
-     
-            result.push([label, values[0], values[1], values[2]]); // Push each result line to the array
-            
-        });
-    }
-
-        var data = [
+                var data = [
     ["ADP Employment Change","💵","ตลาดแรงงานที่แข็งแกร่ง","🔻","ตลาดแรงงานที่อ่อนแอ"],
+    ["Employment Change","💵","ตลาดแรงงานที่แข็งแกร่ง","🔻","ตลาดแรงงานที่อ่อนแอ"],
     ["JOLTs Job Openings","💵","ความต้องการแรงงานที่สูง","🔻","ความต้องการแรงงานต่ำ"],
     ["Fed Interest Rate Decision","💵","อัตราดอกเบี้ยที่สูงขึ้น","🔻","อัตราดอกเบี้ยที่ต่ำลง"],
-    ["Unemployment Rate","🔻","อัตราว่างงานที่ลดลง","💵","อัตราว่างงานที่เพิ่มขึ้น"],
+    ["Unemployment Rate","🔻","อัตราว่างงานที่เพิ่มขึ้น","💵","อัตราว่างงานที่ลดลง"],
     ["Non-Farm Payrolls","💵","ตลาดแรงงานที่แข็งแกร่ง","🔻","ตลาดแรงงานที่อ่อนแอ"],
     ["Average Hourly Earnings MoM","💵","บ่งบอกถึงแรงกดดันเงินเฟ้อ","🔻","บ่งบอกถึงแรงกดดันเงินเฟ้อลดลง"],
     ["ISM Services PMI","💵","การขยายตัวของภาคบริการ","🔻","การหดตัวของภาคบริการ"],
@@ -162,49 +142,100 @@ function updateTextField() {
     ["Core Inflation Rate YoY Flash","🔻","ราคาสินค้าบริการในครัวเรือนสูงขึ้น","💵","ราคาสินค้าบริการในครัวเรือนลดลง"],
     ["Inflation Rate MoM Flash","🔻","ราคาสินค้าบริการในครัวเรือนสูงขึ้นเทียบเดือนก่อน","💵","ราคาสินค้าบริการในครัวเรือนลดลงเทียบเดือนก่อน"],
     ["Initial Jobless Claims","🔻","จำนวนคนว่างงานเพิ่มขึ้น","💵","จำนวนคนว่างงานลดลง"],
+    ["Caixin Manufacturing PMI","💵","การขยายตัวของภาคการผลิตดี","🔻","การขยายตัวของภาคการผลิตแย่"],
+    ["ADP Employment Change","💵","บอกถึงตลาดแรงงานที่แข็งแกร่ง","🔻","บอกถึงตลาดแรงงานที่อ่อนแอ"],
+    ["ECB Interest Rate Decision","💵/🔻","ปรับขึ้นอัตราดอกเบี้ยโดย ECB","🔻/💵","ปรับลดอัตราดอกเบี้ยโดย ECB"],
+    ["Deposit Facility Rate","💵/🔻","ปรับขึ้นอัตราดอกเบี้ยเงินฝาก","🔻/💵","ปรับลดอัตราดอกเบี้ยเงินฝาก"],
+    ["Marginal Lending Rate","💵/🔻","ปรับขึ้นอัตราดอกเบี้ยเงินกู้","🔻/💵","ปรับลดอัตราดอกเบี้ยเงินฝากเงินกู้"],
+    ["Balance of Trade","💵","ดุลการค้าที่เป็นบวก","🔻","ดุลการค้าที่ลดลง"],
+    ["Non Farm Payrolls","💵","จำนวนพนักงานเงินเดือนเพิ่มขึ้น","🔻","จำนวนพนักงานเงินเดือนลดลง"],
+    ["Claimant Count Change","💵","ผู้ขอรับสิทธิประกันการว่างงานลดลง","🔻","ผู้ขอรับสิทธิประกันการว่างงานเพิ่มขึ้น"],
+    ["GDP MoM","💵","การขยายตัวของเศรษฐกิจ","🔻","การหดตัวของเศรษฐกิจ"],
+    ["GDP YoY","💵","การขยายตัวของเศรษฐกิจ","🔻","การหดตัวของเศรษฐกิจ"],
+    ["CPI","🔻","ดัชนีราคาผู้บริโภคสูงขึ้น","💵","ดัชนีราคาผู้บริโภคต่ำลง"],
+    ["PPI MoM","💵/🔻","ดัชนีราคาผู้ผลิตสูงขึ้น","🔻/💵","ดัชนีราคาผู้ผลิตต่ำลง"],
+    ["BoJ Interest Rate Decision","💵","ขึ้นอัตราดอกเบี้ยโดยธนาคารกลางญี่ปุ่น","🔻","ลดอัตราดอกเบี้ยโดยธนาคารกลางญี่ปุ่น"],
+    ["Industrial Production YoY","💵","อัตราการเติบโตของการผลิตภาคอุตสาหกรรม","🔻","อัตราการลดลงของการผลิตภาคอุตสาหกรรม"],
+    ["Inflation Rate YoY Final","🔻","ปรับเพิ่มระดับราคาสินค้าและบริการ","💵","ปรับลดระดับราคาสินค้าและบริการ"],
+    ["Core Inflation Rate YoY Final","🔻","ปรับเพิ่มสินค้าบริการที่ราคาผันผวนสูง","💵","ลดเพิ่มสินค้าบริการที่ราคาผันผวนสูง"],
+    ["Inflation Rate MoM Final","🔻","ปรับเพิ่มระดับราคาสินค้าบริการโดยรวม","💵","ปรับลดระดับราคาสินค้าบริการโดยรวม"],
+    ["CPI Final","🔻","ปรับเพิ่มระดับสินค้าบริการครัวเรือน","💵","ปรับลดระดับสินค้าบริการครัวเรือน"],
+    ["Balance of Trade","💵","ดุลการค้าเป็นบวก","🔻","ดุลการค้าเป็นลบ"],
+    ["BoE Interest Rate Decision","💵","ขึ้นอัตราดอกเบี้ยโดยธนาคารกลางอังกฤษ","🔻","ลดอัตราดอกเบี้ยโดยธนาคารกลางอังกฤษ"],
     ];
 
-    console.log(result)
+    filteredData.forEach(event => {
+    const eventNameWithoutParentheses = event.event.replace(/ *\([^)]*\) */g, "");
+    const eventDateUTC = new Date(event.date);
+    const options = { timeZone: 'Asia/Bangkok',  hour: '2-digit', minute: '2-digit'};
+    const eventDateThailand = eventDateUTC.toLocaleString('en-US', options);
 
-    for (var i = 0; i < result.length; i++) {
-        eventX[i] = result[i][0];
-        real[i] = result[i][1];
-        forecast[i] = result[i][2];
-        past[i] = result[i][3];
+    const row = document.createElement('tr');
 
-
-        // Loop through each eventX and compare with data
-        for (var j = 0; j < data.length; j++) {
-            if (eventX[i] === data[j][0]) {
-                var newText = "";
-
-                if (parseFloat(real[i]) !== '' && parseFloat(real[i]) > parseFloat(past[i])) {
-                    newText = '[จริง][' + data[j][1] + '] <span style="color: yellow;">' + data[j][0] + '</span> /' + data[j][2];
-                } else if (parseFloat(real[i]) !== '' && parseFloat(real[i]) < parseFloat(past[i])) {
-                    newText = '[จริง][' + data[j][3] + '] <span style="color: yellow;">' + data[j][0] + '</span> /' + data[j][4];
-                } else if (parseFloat(forecast[i]) > parseFloat(past[i])) {
-                    newText = '[คาดการณ์][' + data[j][1] + '] <span style="color: yellow;">' + data[j][0] + '</span> /' + data[j][2];
-                } else if (parseFloat(forecast[i]) < parseFloat(past[i])) {
-                    newText = '[คาดการณ์][' + data[j][3] + '] <span style="color: yellow;">' + data[j][0] + '</span> /' + data[j][4];
-                } else if (parseFloat(real[i]) !== '' && parseFloat(real[i]) == parseFloat(past[i])){
-                    newText = '<span style="color: grey;">[จริง] ' + data[j][0] + ' /ไม่มีอะไรเปลี่ยนแปลง</span>';
-                } else if (parseFloat(forecast[i]) == parseFloat(past[i])){
-                    newText = '<span style="color: grey;">[คาดการณ์]' + data[j][0] + ' /ไม่มีอะไรเปลี่ยนแปลง</span>';
-                }
-                var newDiv = document.createElement('div');
-                newDiv.id = 'div_' + eventX[i].replace(/\s/g, '_'); 
-                newDiv.innerHTML = newText;
-                newDiv.style.textAlign = 'left';
-                newDiv.style.margin = '0 auto';
-                document.body.appendChild(newDiv);
-		document.getElementById('editor').innerHTML = '<iframe id="iframe" src="https://www.cashbackforex.com/th/widgets/economic-calendar?ContainerId=economic-calendar-466772&DefaultTime=today&IsShowEmbedButton=true&DefaultTheme=dark&Impacts=HIGH&Countries=us" width="880" height="400" style="border: none;" scrolling="no"></iframe><br>x';
-                break;
-            }
-        }
+    // Check conditions and set font color
+    let actualColor = '';
+    if (Number(event.actual) > Number(event.previous)) {
+        actualColor = 'lime';
+    } else if (Number(event.actual) < Number(event.previous)) {
+        actualColor = 'red';
     }
-}
 
+    let estimateColor = '';
+    if (Number(event.estimate) > Number(event.previous)) {
+        estimateColor = 'lime';
+    } else if (Number(event.estimate) < Number(event.previous)) {
+        estimateColor = 'red';
+    }
+    
+    row.innerHTML = `
+        <td>${eventDateThailand}</td>
+        <td>${eventNameWithoutParentheses}</td>
+        <td>${event.impact||''}</td>
+        <td>${event.country||''}</td>
+        <td>${event.previous||''}</td>
+        <td style="color: ${estimateColor};"><i>${event.estimate||''}</i></td>
+        <td style="color: ${actualColor};"><u>${event.actual||''}</u></td>
+    `;
+    if (event.actual !== null && event.actual > event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td>[จริง] <u>${result[1]} ${result[2]}</u></td>`;
+                        } 
+                    } else if (event.actual !== null && event.actual < event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td>[จริง] <u>${result[3]} ${result[4]}</u></td>`;
+                        } 
+                    } 
+                    else if (event.actual !== null && event.actual == event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td><i>[จริง] <u><font color="grey">ไม่มีผล</font></u></i></td>`;
+                        } 
+                    } 
+                    
+                    else if (event.actual === null && event.estimate > event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td><i>[เดา] ${result[1]} ${result[2]}</i></td>`;
+                        } 
+                    } else if (event.actual === null && event.estimate < event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td><i>[เดา] ${result[3]} ${result[4]}</i></td>`;
+                        } 
+                    } else if (event.actual === null && event.estimate == event.previous) {
+                        const result = data.find(d => d[0] === eventNameWithoutParentheses);
+                        if (result) {
+                            row.innerHTML += `<td><i>[เดา] <font color="grey">ไม่มีผล</font></i></td>`;
+                        } 
+                    } 
 
+                    document.querySelector('table').appendChild(row);
+                });
+
+            })
+            .catch(error => console.error('Error fetching data:', error));
     </script>
 </body>
 </html>
