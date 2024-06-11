@@ -166,9 +166,14 @@
 
     filteredData.forEach(event => {
     const eventNameWithoutParentheses = event.event.replace(/ *\([^)]*\) */g, "");
+
     const eventDateUTC = new Date(event.date);
-    const options = { timeZone: 'Asia/Bangkok',  hour: '2-digit', minute: '2-digit'};
-    const eventDateThailand = eventDateUTC.toLocaleString('en-US', options);
+const thaiTimeZoneOffset = 7 * 60 * 60 * 1000;
+const thaiTimeInMillis = eventDateUTC.getTime() + thaiTimeZoneOffset;
+const eventDateThailand = new Date(thaiTimeInMillis);
+const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+const formattedTime = eventDateThailand.toLocaleTimeString('en-US', options);
+
 
     const row = document.createElement('tr');
 
@@ -188,7 +193,7 @@
     }
     
     row.innerHTML = `
-        <td>${eventDateThailand}</td>
+        <td>${formattedTime}</td>
         <td>${eventNameWithoutParentheses}</td>
         <td>${event.impact||''}</td>
         <td>${event.country||''}</td>
