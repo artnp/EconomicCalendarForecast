@@ -176,22 +176,23 @@
 
 
     const row = document.createElement('tr');
-    // Check conditions and set font color
     let actualColor = '';
-    if (Number(event.actual) > Number(event.previous)) {
+    let estimateColor = '';
+
+    if (event.actual == null && Number(event.estimate) > Number(event.previous)) {
+        estimateColor = 'lime';
+    } else if (event.actual == null && Number(event.estimate) < Number(event.previous)) {
+        estimateColor = 'red';
+    }
+    
+    if (event.actual !== null && Number(event.actual) > Number(event.previous)) {
         actualColor = 'lime';
-    } else if (Number(event.actual) < Number(event.previous)) {
+    } else if (event.actual !== null && Number(event.actual) < Number(event.previous)) {
         actualColor = 'red';
     }
 
-    let estimateColor = '';
-    if (Number(event.estimate) > Number(event.previous)) {
-        estimateColor = 'lime';
-    } else if (Number(event.estimate) < Number(event.previous)) {
-        estimateColor = 'red';
-        
-    }
-    
+   
+
     row.innerHTML = `
         <td>${formattedTime}</td>
         <td>${eventNameWithoutParentheses}</td>
