@@ -203,12 +203,12 @@
     if (event.actual !== null && event.actual > event.previous) {
                         const result = data.find(d => d[0] === eventNameWithoutParentheses);
                         if (result) {
-                            row.innerHTML += `<td>[จริง] <u>${result[1]} ${result[2]}</u></td>`;
+                            row.innerHTML += `<td>[จริง] ${result[1]} <u>${result[2]}</u></td>`;
                         } 
                     } else if (event.actual !== null && event.actual < event.previous) {
                         const result = data.find(d => d[0] === eventNameWithoutParentheses);
                         if (result) {
-                            row.innerHTML += `<td>[จริง] <u>${result[3]} ${result[4]}</u></td>`;
+                            row.innerHTML += `<td>[จริง] ${result[3]} <u>${result[4]}</u></td>`;
                         } 
                     } 
                     else if (event.actual !== null && event.actual == event.previous) {
