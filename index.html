@@ -18,7 +18,7 @@
         }
 
         table {
-            width: 80%;
+            width: 100%;
             max-width: 1200px;
             border-collapse: separate;
             border-spacing: 0;
@@ -57,7 +57,7 @@
     </style>
 </head>
 <body>
-    <center>
+
     <table id="economic-calendar">
         <thead>
             <tr>
@@ -74,7 +74,7 @@
         <tbody>
             <!-- Data will be injected here -->
         </tbody>
-    </table></center>
+    </table>
 
     <script>
   const apiKey = 'sQxWATJCWEssuIBeQgtcp6rPkOGwsFDd';
@@ -217,17 +217,17 @@
                     else if (event.actual === null && event.estimate > event.previous) {
                         const result = data.find(d => d[0] === eventNameWithoutParentheses);
                         if (result) {
-                            row.innerHTML += `<td><i>[เดา] ${result[1]} ${result[2]}</i></td>`;
+                            row.innerHTML += `<td><i>[คาดเดา] ${result[1]} ${result[2]}</i></td>`;
                         } 
                     } else if (event.actual === null && event.estimate < event.previous) {
                         const result = data.find(d => d[0] === eventNameWithoutParentheses);
                         if (result) {
-                            row.innerHTML += `<td><i>[เดา] ${result[3]} ${result[4]}</i></td>`;
+                            row.innerHTML += `<td><i>[คาดเดา] ${result[3]} ${result[4]}</i></td>`;
                         } 
                     } else if (event.actual === null && event.estimate == event.previous) {
                         const result = data.find(d => d[0] === eventNameWithoutParentheses);
                         if (result) {
-                            row.innerHTML += `<td><i>[เดา] <font color="grey">ไม่มีผล</font></i></td>`;
+                            row.innerHTML += `<td><i>[คาดเดา] <font color="grey">ไม่มีผล</font></i></td>`;
                         } 
                     } 
 
