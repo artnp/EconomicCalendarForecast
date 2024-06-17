@@ -103,7 +103,8 @@
     <script>
   const apiKey = atob('c1F4V0FUSkNXRXNzdUlCZVFndGNwNnJQa09Hd3NGRGQ=');
         const today = new Date().toISOString().split('T')[0];
-        const url = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${today}&to=${today}&apikey=${apiKey}`;
+	const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
+	const url = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${today}&to=${tomorrow}&apikey=${apiKey}`;
         
         const filterCriteria = {
             impact: 'High',
@@ -187,7 +188,7 @@
     ["Balance of Trade","💵","ดุลการค้าเป็นบวก","💥","ดุลการค้าเป็นลบ"],
     ["BoE Interest Rate Decision","💵","ขึ้นอัตราดอกเบี้ยโดยธนาคารกลางอังกฤษ","💥","ลดอัตราดอกเบี้ยโดยธนาคารกลางอังกฤษ"],
     ["New Yuan Loans","💵","สภาพคล่องในระบบเศรษฐกิจเพิ่มขึ้น","💥","สภาพคล่องในระบบเศรษฐกิจลดลง"],
-
+    ["Michigan Consumer Sentiment","💵","ความเชื่อมั่นของผู้บริโภคสูงขึ้น","💥","ความเชื่อมั่นของผู้บริโภคต่ำลง"],
     ];
 
     filteredData.forEach(event => {
